@@ -1,0 +1,39 @@
+name: Report collection health
+
+on:
+  schedule:
+    # UTC -> Asia/Seoul: 06:30, 12:00, 22:00
+    - cron: '30 21 * * *'
+    - cron: '0 3 * * *'
+    - cron: '0 13 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+  issues: write
+
+concurrency:
+  group: ev-collector
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit observations and post email notification
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 audit.py
+      - name: Save report history
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add reports/
+          if ! git diff --cached --quiet; then
+            git commit -m 'Save scheduled collection audit'
+            git pull --rebase origin main
+            git push
+          fi
