@@ -1,0 +1,52 @@
+{
+  "started_at_kst": "2026-10-25T18:54:27+09:00",
+  "finished_at_kst": "2026-10-25T18:55:10+09:00",
+  "source": "https://apis.data.go.kr/B552584/EvCharger/getChargerInfo",
+  "source_page": "https://www.data.go.kr/data/15076352/openapi.do",
+  "license": "KOGL Type 1 (attribution)",
+  "scope_requested": {
+    "zcode": "47",
+    "numOfRows": 9999
+  },
+  "retained_filter": "addr contains '구미시'",
+  "mode": "current full-information pages, not change-only status API",
+  "complete": true,
+  "pages": [
+    {
+      "page_no": 1,
+      "reported_total": 23333,
+      "rows_received": 9999,
+      "request_started_at_kst": "2026-10-25T18:54:27+09:00",
+      "received_at_kst": "2026-10-25T18:54:45+09:00"
+    },
+    {
+      "page_no": 2,
+      "reported_total": 23333,
+      "rows_received": 9999,
+      "request_started_at_kst": "2026-10-25T18:54:45+09:00",
+      "received_at_kst": "2026-10-25T18:55:02+09:00"
+    },
+    {
+      "page_no": 3,
+      "reported_total": 23333,
+      "rows_received": 3335,
+      "request_started_at_kst": "2026-10-25T18:55:03+09:00",
+      "received_at_kst": "2026-10-25T18:55:10+09:00"
+    }
+  ],
+  "error_type": null,
+  "gumi_rows_retained": 4012,
+  "gumi_stations_retained": 853,
+  "regional_rows_received": 23333,
+  "request_budget": {
+    "date_kst": "2026-10-25",
+    "attempted_requests": 3
+  },
+  "notes": [
+    "Snapshot pages are not atomic; each row has its collection time.",
+    "statUpdDt is provider update time, not observation time.",
+    "Missing/stale/unknown/fault data must not be labelled available.",
+    "No historical events or future labels are fabricated.",
+    "Failed runs may contain partial records; use complete=true only."
+  ]
+}
