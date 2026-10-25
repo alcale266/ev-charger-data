@@ -1,0 +1,154 @@
+name: Collect Gumi charger snapshots
+
+on:
+  schedule:
+    - cron: '7,17,27,37,47,57 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ev-collector
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch current information and retain Gumi only
+        id: collect
+        env:
+          DATA_GO_KR_SERVICE_KEY: ${{ secrets.DATA_GO_KR_SERVICE_KEY }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import csv, gzip, json, math, os, sys, urllib.parse, urllib.request
+          import xml.etree.ElementTree as ET
+          from datetime import datetime, timezone, timedelta
+          from pathlib import Path
+
+          KST = timezone(timedelta(hours=9))
+          stamp = lambda: datetime.now(KST).isoformat(timespec='seconds')
+          started = stamp()
+          day = started[:10]
+          base = Path('data')
+          base.mkdir(exist_ok=True)
+          counter_path = base / 'request_budget.json'
+          counter = json.loads(counter_path.read_text()) if counter_path.exists() else {}
+          if counter.get('date_kst') != day:
+              counter = {'date_kst': day, 'attempted_requests': 0}
+          meta = {'started_at_kst': started, 'finished_at_kst': None,
+                  'source': 'https://apis.data.go.kr/B552584/EvCharger/getChargerInfo',
+                  'source_page': 'https://www.data.go.kr/data/15076352/openapi.do',
+                  'license': 'KOGL Type 1 (attribution)',
+                  'scope_requested': {'zcode': '47', 'numOfRows': 9999},
+                  'retained_filter': "addr contains '구미시'",
+                  'mode': 'current full-information pages, not change-only status API',
+                  'complete': False, 'pages': [], 'error_type': None}
+          kept = []
+          seen = set()
+          total_seen = 0
+          totals = set()
+          failed = False
+          try:
+              key = urllib.parse.unquote(os.environ.get('DATA_GO_KR_SERVICE_KEY', '').strip())
+              if not key:
+                  raise RuntimeError('MissingSecret')
+              page, page_count = 1, 1
+              while page <= page_count:
+                  if page > 6:
+                      raise RuntimeError('PageSafetyLimit')
+                  if counter['attempted_requests'] >= 900:
+                      raise RuntimeError('DailyRequestSafetyLimit')
+                  counter['attempted_requests'] += 1
+                  counter_path.write_text(json.dumps(counter, indent=2), encoding='utf-8')
+                  params = urllib.parse.urlencode({'serviceKey': key, 'pageNo': page,
+                                                  'numOfRows': 9999, 'zcode': '47'})
+                  req = urllib.request.Request(meta['source'] + '?' + params,
+                                               headers={'User-Agent': 'EV-course-collector/1.0'})
+                  request_started = stamp()
+                  with urllib.request.urlopen(req, timeout=60) as response:
+                      raw = response.read()
+                  received = stamp()
+                  root = ET.fromstring(raw)
+                  code = root.findtext('.//resultCode')
+                  if code != '00':
+                      raise RuntimeError('ProviderResultNotSuccess')
+                  total = int(root.findtext('.//totalCount'))
+                  totals.add(total)
+                  page_count = math.ceil(total / 9999)
+                  if page_count > 6:
+                      raise RuntimeError('PageSafetyLimit')
+                  items = root.findall('.//item')
+                  meta['pages'].append({'page_no': page, 'reported_total': total,
+                                        'rows_received': len(items),
+                                        'request_started_at_kst': request_started,
+                                        'received_at_kst': received})
+                  for item in items:
+                      record = {child.tag: child.text or '' for child in item}
+                      identity = (record.get('statId'), record.get('chgerId'))
+                      if not all(identity) or identity in seen:
+                          raise RuntimeError('MissingOrDuplicateChargerIdentity')
+                      seen.add(identity)
+                      total_seen += 1
+                      if '구미시' in record.get('addr', ''):
+                          record['collected_at_kst'] = received
+                          record['source_page_no'] = page
+                          kept.append(record)
+                  page += 1
+              if len(totals) != 1 or total_seen != next(iter(totals)) or not kept:
+                  raise RuntimeError('IncompleteOrEmptySnapshot')
+              meta['complete'] = True
+          except Exception as exc:
+              failed = True
+              # Never print exception text, request URLs, response bodies or credentials.
+              safe_errors = {'MissingSecret', 'PageSafetyLimit', 'DailyRequestSafetyLimit',
+                             'ProviderResultNotSuccess', 'MissingOrDuplicateChargerIdentity',
+                             'IncompleteOrEmptySnapshot'}
+              meta['error_type'] = str(exc) if str(exc) in safe_errors else type(exc).__name__
+          meta['finished_at_kst'] = stamp()
+          meta['gumi_rows_retained'] = len(kept)
+          meta['gumi_stations_retained'] = len({r.get('statId') for r in kept})
+          meta['regional_rows_received'] = total_seen
+          meta['request_budget'] = counter
+          meta['notes'] = ['Snapshot pages are not atomic; each row has its collection time.',
+                           'statUpdDt is provider update time, not observation time.',
+                           'Missing/stale/unknown/fault data must not be labelled available.',
+                           'No historical events or future labels are fabricated.',
+                           'Failed runs may contain partial records; use complete=true only.']
+          target_dir = base / 'snapshots' / day
+          target_dir.mkdir(parents=True, exist_ok=True)
+          suffix = os.environ.get('GITHUB_RUN_ID', 'local') + '-' + os.environ.get('GITHUB_RUN_ATTEMPT', '1')
+          target = target_dir / (datetime.now(KST).strftime('%H%M%S') + '-' + suffix + '.json.gz')
+          with gzip.open(target, 'wt', encoding='utf-8') as stream:
+              json.dump({'metadata': meta, 'records': kept}, stream, ensure_ascii=False)
+          (base / 'latest_run.json').write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding='utf-8')
+          if meta['complete']:
+              fields = sorted(set().union(*(row.keys() for row in kept)))
+              with (base / 'latest_gumi.csv').open('w', encoding='utf-8-sig', newline='') as stream:
+                  writer = csv.DictWriter(stream, fieldnames=fields)
+                  writer.writeheader()
+                  writer.writerows(kept)
+          Path(os.environ['GITHUB_OUTPUT']).open('a').write('failed=' + str(failed).lower() + '\n')
+          with Path(os.environ['GITHUB_STEP_SUMMARY']).open('a') as stream:
+              stream.write(f"## Gumi collection\nComplete: {meta['complete']}\n\n"
+                           f"Gumi chargers: {len(kept)}; stations: {meta['gumi_stations_retained']}\n\n"
+                           f"Started (KST): {started}\n\nFile: `{target}`\n\n"
+                           f"Error type: {meta['error_type']}\n")
+          print('Complete:', meta['complete'], 'Gumi records:', len(kept), 'Error:', meta['error_type'])
+          PY
+      - name: Persist observations and request accounting
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/
+          if ! git diff --cached --quiet; then
+            git commit -m 'Collect public Gumi charger snapshot'
+            git push
+          fi
+      - name: Signal incomplete collection
+        if: steps.collect.outputs.failed == 'true'
+        run: exit 1
