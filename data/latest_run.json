@@ -1,6 +1,6 @@
 {
-  "started_at_kst": "2026-10-27T17:18:49+09:00",
-  "finished_at_kst": "2026-10-27T17:19:28+09:00",
+  "started_at_kst": "2026-10-27T18:08:00+09:00",
+  "finished_at_kst": "2026-10-27T18:08:46+09:00",
   "source": "https://apis.data.go.kr/B552584/EvCharger/getChargerInfo",
   "source_page": "https://www.data.go.kr/data/15076352/openapi.do",
   "license": "KOGL Type 1 (attribution)",
@@ -14,34 +14,34 @@
   "pages": [
     {
       "page_no": 1,
-      "reported_total": 23378,
+      "reported_total": 23383,
       "rows_received": 9999,
-      "request_started_at_kst": "2026-10-27T17:18:49+09:00",
-      "received_at_kst": "2026-10-27T17:19:06+09:00"
+      "request_started_at_kst": "2026-10-27T18:08:00+09:00",
+      "received_at_kst": "2026-10-27T18:08:16+09:00"
     },
     {
       "page_no": 2,
-      "reported_total": 23378,
+      "reported_total": 23383,
       "rows_received": 9999,
-      "request_started_at_kst": "2026-10-27T17:19:07+09:00",
-      "received_at_kst": "2026-10-27T17:19:22+09:00"
+      "request_started_at_kst": "2026-10-27T18:08:16+09:00",
+      "received_at_kst": "2026-10-27T18:08:38+09:00"
     },
     {
       "page_no": 3,
-      "reported_total": 23378,
-      "rows_received": 3380,
-      "request_started_at_kst": "2026-10-27T17:19:22+09:00",
-      "received_at_kst": "2026-10-27T17:19:28+09:00"
+      "reported_total": 23383,
+      "rows_received": 3385,
+      "request_started_at_kst": "2026-10-27T18:08:38+09:00",
+      "received_at_kst": "2026-10-27T18:08:46+09:00"
     }
   ],
   "error_type": null,
   "http_errors": [],
-  "gumi_rows_retained": 4007,
-  "gumi_stations_retained": 851,
-  "regional_rows_received": 23378,
+  "gumi_rows_retained": 4012,
+  "gumi_stations_retained": 852,
+  "regional_rows_received": 23383,
   "request_budget": {
     "date_kst": "2026-10-27",
-    "attempted_requests": 81
+    "attempted_requests": 84
   },
   "notes": [
     "Snapshot pages are not atomic; each row has its collection time.",
