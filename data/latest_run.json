@@ -1,6 +1,6 @@
 {
-  "started_at_kst": "2026-10-30T15:24:27+09:00",
-  "finished_at_kst": "2026-10-30T15:24:58+09:00",
+  "started_at_kst": "2026-10-30T16:33:21+09:00",
+  "finished_at_kst": "2026-10-30T16:35:06+09:00",
   "source": "https://apis.data.go.kr/B552584/EvCharger/getChargerInfo",
   "source_page": "https://www.data.go.kr/data/15076352/openapi.do",
   "license": "KOGL Type 1 (attribution)",
@@ -10,38 +10,42 @@
   },
   "retained_filter": "addr contains '구미시'",
   "mode": "current full-information pages, not change-only status API",
-  "complete": true,
+  "complete": false,
   "pages": [
     {
       "page_no": 1,
       "reported_total": 23422,
       "rows_received": 9999,
-      "request_started_at_kst": "2026-10-30T15:24:27+09:00",
-      "received_at_kst": "2026-10-30T15:24:40+09:00"
+      "request_started_at_kst": "2026-10-30T16:33:21+09:00",
+      "received_at_kst": "2026-10-30T16:33:42+09:00"
     },
     {
       "page_no": 2,
       "reported_total": 23422,
       "rows_received": 9999,
-      "request_started_at_kst": "2026-10-30T15:24:40+09:00",
-      "received_at_kst": "2026-10-30T15:24:52+09:00"
-    },
-    {
-      "page_no": 3,
-      "reported_total": 23422,
-      "rows_received": 3424,
-      "request_started_at_kst": "2026-10-30T15:24:52+09:00",
-      "received_at_kst": "2026-10-30T15:24:58+09:00"
+      "request_started_at_kst": "2026-10-30T16:33:42+09:00",
+      "received_at_kst": "2026-10-30T16:33:59+09:00"
     }
   ],
-  "error_type": null,
-  "http_errors": [],
-  "gumi_rows_retained": 4023,
-  "gumi_stations_retained": 853,
-  "regional_rows_received": 23422,
+  "error_type": "HTTPError",
+  "http_errors": [
+    {
+      "page": 3,
+      "status": 504,
+      "attempt": 1
+    },
+    {
+      "page": 3,
+      "status": 504,
+      "attempt": 2
+    }
+  ],
+  "gumi_rows_retained": 3595,
+  "gumi_stations_retained": 740,
+  "regional_rows_received": 19998,
   "request_budget": {
     "date_kst": "2026-10-30",
-    "attempted_requests": 67
+    "attempted_requests": 71
   },
   "notes": [
     "Snapshot pages are not atomic; each row has its collection time.",
