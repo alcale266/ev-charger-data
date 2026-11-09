@@ -1,6 +1,6 @@
 {
-  "started_at_kst": "2026-11-09T14:05:34+09:00",
-  "finished_at_kst": "2026-11-09T14:06:45+09:00",
+  "started_at_kst": "2026-11-09T15:10:39+09:00",
+  "finished_at_kst": "2026-11-09T15:12:41+09:00",
   "source": "https://apis.data.go.kr/B552584/EvCharger/getChargerInfo",
   "source_page": "https://www.data.go.kr/data/15076352/openapi.do",
   "license": "KOGL Type 1 (attribution)",
@@ -14,28 +14,33 @@
   "pages": [
     {
       "page_no": 1,
-      "reported_total": 23443,
+      "reported_total": 23448,
       "rows_received": 9999,
-      "request_started_at_kst": "2026-11-09T14:05:34+09:00",
-      "received_at_kst": "2026-11-09T14:05:47+09:00"
+      "request_started_at_kst": "2026-11-09T15:10:39+09:00",
+      "received_at_kst": "2026-11-09T15:11:33+09:00"
     },
     {
       "page_no": 2,
-      "reported_total": 23443,
+      "reported_total": 23448,
       "rows_received": 9999,
-      "request_started_at_kst": "2026-11-09T14:05:47+09:00",
-      "received_at_kst": "2026-11-09T14:06:36+09:00"
+      "request_started_at_kst": "2026-11-09T15:11:33+09:00",
+      "received_at_kst": "2026-11-09T15:12:35+09:00"
     },
     {
       "page_no": 3,
-      "reported_total": 23443,
-      "rows_received": 3445,
-      "request_started_at_kst": "2026-11-09T14:06:36+09:00",
-      "received_at_kst": "2026-11-09T14:06:45+09:00"
+      "reported_total": 23448,
+      "rows_received": 3450,
+      "request_started_at_kst": "2026-11-09T15:12:35+09:00",
+      "received_at_kst": "2026-11-09T15:12:41+09:00"
     }
   ],
   "error_type": null,
   "http_errors": [
+    {
+      "page": 1,
+      "status": 504,
+      "attempt": 1
+    },
     {
       "page": 2,
       "status": 504,
@@ -44,10 +49,10 @@
   ],
   "gumi_rows_retained": 4025,
   "gumi_stations_retained": 854,
-  "regional_rows_received": 23443,
+  "regional_rows_received": 23448,
   "request_budget": {
     "date_kst": "2026-11-09",
-    "attempted_requests": 57
+    "attempted_requests": 62
   },
   "notes": [
     "Snapshot pages are not atomic; each row has its collection time.",
