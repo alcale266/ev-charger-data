@@ -1,6 +1,6 @@
 {
-  "started_at_kst": "2026-11-20T08:21:32+09:00",
-  "finished_at_kst": "2026-11-20T08:22:41+09:00",
+  "started_at_kst": "2026-11-20T09:07:26+09:00",
+  "finished_at_kst": "2026-11-20T09:09:00+09:00",
   "source": "https://apis.data.go.kr/B552584/EvCharger/getChargerInfo",
   "source_page": "https://www.data.go.kr/data/15076352/openapi.do",
   "license": "KOGL Type 1 (attribution)",
@@ -14,40 +14,40 @@
   "pages": [
     {
       "page_no": 1,
-      "reported_total": 23481,
+      "reported_total": 23482,
       "rows_received": 9999,
-      "request_started_at_kst": "2026-11-20T08:21:32+09:00",
-      "received_at_kst": "2026-11-20T08:21:46+09:00"
+      "request_started_at_kst": "2026-11-20T09:07:26+09:00",
+      "received_at_kst": "2026-11-20T09:08:41+09:00"
     },
     {
       "page_no": 2,
-      "reported_total": 23481,
+      "reported_total": 23482,
       "rows_received": 9999,
-      "request_started_at_kst": "2026-11-20T08:21:46+09:00",
-      "received_at_kst": "2026-11-20T08:22:00+09:00"
+      "request_started_at_kst": "2026-11-20T09:08:42+09:00",
+      "received_at_kst": "2026-11-20T09:08:55+09:00"
     },
     {
       "page_no": 3,
-      "reported_total": 23481,
-      "rows_received": 3483,
-      "request_started_at_kst": "2026-11-20T08:22:00+09:00",
-      "received_at_kst": "2026-11-20T08:22:41+09:00"
+      "reported_total": 23482,
+      "rows_received": 3484,
+      "request_started_at_kst": "2026-11-20T09:08:55+09:00",
+      "received_at_kst": "2026-11-20T09:09:00+09:00"
     }
   ],
   "error_type": null,
   "http_errors": [
     {
-      "page": 3,
-      "status": 504,
+      "page": 1,
+      "status": 503,
       "attempt": 1
     }
   ],
   "gumi_rows_retained": 4023,
   "gumi_stations_retained": 856,
-  "regional_rows_received": 23481,
+  "regional_rows_received": 23482,
   "request_budget": {
     "date_kst": "2026-11-20",
-    "attempted_requests": 30
+    "attempted_requests": 34
   },
   "notes": [
     "Snapshot pages are not atomic; each row has its collection time.",
